@@ -18,7 +18,12 @@ const createSessionMiddleware = () => {
       },
       collectionName: 'sessions',
       ttl: 24 * 60 * 60, // 1 day
-      autoRemove: 'native'
+      autoRemove: 'native',
+      touchAfter: 24 * 3600 // Lazy session update: only update once every 24 hours unless session is modified
+    });
+
+    store.on('error', (err) => {
+      console.warn('[Session Store Warning]:', err.message);
     });
   }
 

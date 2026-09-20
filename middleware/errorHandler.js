@@ -13,6 +13,10 @@ function notFoundHandler(req, res, next) {
 }
 
 function errorHandler(err, req, res, next) {
+  if (res.headersSent) {
+    return next(err);
+  }
+
   // Determine status code
   const statusCode = err.statusCode || err.status || 500;
 

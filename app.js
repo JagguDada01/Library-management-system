@@ -44,6 +44,14 @@ app.use(methodOverride('_method'));
 // Static assets
 app.use(express.static(path.join(__dirname, 'public')));
 
+// Respond 204 immediately for favicon / touch-icon crawler probes to avoid session churn
+app.use((req, res, next) => {
+  if (req.path.startsWith('/apple-touch-icon') || req.path === '/favicon.ico') {
+    return res.status(204).end();
+  }
+  next();
+});
+
 // Session configuration
 app.use(createSessionMiddleware());
 

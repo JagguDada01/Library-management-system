@@ -4,3 +4,7 @@ node_modules/
 coverage/
 dist/
 .DS_Store
+*.pptx
+*.pdf
+generate_sih_ppt.py
+*_diagram.png
