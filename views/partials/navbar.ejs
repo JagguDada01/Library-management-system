@@ -1,3 +1,8 @@
+<%
+  const safeUser = (typeof currentUser !== 'undefined' && currentUser) ? currentUser : null;
+  const safePath = typeof currentPath === 'string' ? currentPath : '';
+  const safeToken = typeof csrfToken !== 'undefined' ? csrfToken : '';
+%>
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top shadow-sm py-2">
   <div class="container">
     <a class="navbar-brand d-flex align-items-center gap-2" href="/">
@@ -13,57 +18,57 @@
       <!-- Public / Catalog Links -->
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
         <li class="nav-item">
-          <a class="nav-link <%= currentPath === '/' || currentPath.startsWith('/books') ? 'active' : '' %>" href="/books">
+          <a class="nav-link <%= safePath === '/' || safePath.startsWith('/books') ? 'active' : '' %>" href="/books">
             <i class="bi bi-compass me-1"></i> Browse Catalog
           </a>
         </li>
 
-        <% if (currentUser && currentUser.role === 'MEMBER') { %>
+        <% if (safeUser && safeUser.role === 'MEMBER') { %>
           <li class="nav-item">
-            <a class="nav-link <%= currentPath === '/member/dashboard' ? 'active' : '' %>" href="/member/dashboard">
+            <a class="nav-link <%= safePath === '/member/dashboard' ? 'active' : '' %>" href="/member/dashboard">
               <i class="bi bi-speedometer2 me-1"></i> Dashboard
             </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link <%= currentPath === '/member/loans' ? 'active' : '' %>" href="/member/loans">
+            <a class="nav-link <%= safePath === '/member/loans' ? 'active' : '' %>" href="/member/loans">
               <i class="bi bi-journal-bookmark me-1"></i> My Loans
             </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link <%= currentPath === '/member/requests' ? 'active' : '' %>" href="/member/requests">
+            <a class="nav-link <%= safePath === '/member/requests' ? 'active' : '' %>" href="/member/requests">
               <i class="bi bi-clock-history me-1"></i> My Requests
             </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link <%= currentPath === '/member/history' ? 'active' : '' %>" href="/member/history">
+            <a class="nav-link <%= safePath === '/member/history' ? 'active' : '' %>" href="/member/history">
               <i class="bi bi-archive me-1"></i> History
             </a>
           </li>
         <% } %>
 
-        <% if (currentUser && currentUser.role === 'LIBRARIAN') { %>
+        <% if (safeUser && safeUser.role === 'LIBRARIAN') { %>
           <li class="nav-item">
-            <a class="nav-link <%= currentPath === '/librarian/dashboard' ? 'active' : '' %>" href="/librarian/dashboard">
+            <a class="nav-link <%= safePath === '/librarian/dashboard' ? 'active' : '' %>" href="/librarian/dashboard">
               <i class="bi bi-graph-up-arrow me-1"></i> Analytics
             </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link <%= currentPath.startsWith('/librarian/books') ? 'active' : '' %>" href="/librarian/books">
+            <a class="nav-link <%= safePath.startsWith('/librarian/books') ? 'active' : '' %>" href="/librarian/books">
               <i class="bi bi-collection me-1"></i> Books Inventory
             </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link <%= currentPath.startsWith('/librarian/requests') ? 'active' : '' %>" href="/librarian/requests">
+            <a class="nav-link <%= safePath.startsWith('/librarian/requests') ? 'active' : '' %>" href="/librarian/requests">
               <i class="bi bi-inbox me-1"></i> Issue Requests
             </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link <%= currentPath.startsWith('/librarian/loans') ? 'active' : '' %>" href="/librarian/loans">
+            <a class="nav-link <%= safePath.startsWith('/librarian/loans') ? 'active' : '' %>" href="/librarian/loans">
               <i class="bi bi-arrow-left-right me-1"></i> Loans & Returns
             </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link <%= currentPath === '/librarian/members' ? 'active' : '' %>" href="/librarian/members">
+            <a class="nav-link <%= safePath === '/librarian/members' ? 'active' : '' %>" href="/librarian/members">
               <i class="bi bi-people me-1"></i> Members
             </a>
           </li>
@@ -72,20 +77,20 @@
 
       <!-- User Actions / Auth -->
       <ul class="navbar-nav ms-auto align-items-lg-center">
-        <% if (currentUser) { %>
+        <% if (safeUser) { %>
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle d-flex align-items-center gap-2" href="#" role="button" data-bs-toggle="dropdown">
               <div class="rounded-circle bg-secondary d-flex align-items-center justify-content-center text-white" style="width: 32px; height: 32px; font-size: 0.85rem;">
-                <%= currentUser.name.charAt(0).toUpperCase() %>
+                <%= safeUser.name.charAt(0).toUpperCase() %>
               </div>
-              <span class="d-none d-sm-inline"><%= currentUser.name %></span>
-              <span class="badge <%= currentUser.role === 'LIBRARIAN' ? 'bg-danger' : 'bg-primary' %> ms-1" style="font-size: 0.7rem;">
-                <%= currentUser.role %>
+              <span class="d-none d-sm-inline"><%= safeUser.name %></span>
+              <span class="badge <%= safeUser.role === 'LIBRARIAN' ? 'bg-danger' : 'bg-primary' %> ms-1" style="font-size: 0.7rem;">
+                <%= safeUser.role %>
               </span>
             </a>
             <ul class="dropdown-menu dropdown-menu-end shadow">
-              <li class="dropdown-header">Signed in as <strong><%= currentUser.email %></strong></li>
-              <% if (currentUser.role === 'MEMBER') { %>
+              <li class="dropdown-header">Signed in as <strong><%= safeUser.email %></strong></li>
+              <% if (safeUser.role === 'MEMBER') { %>
                 <li><a class="dropdown-item" href="/member/profile"><i class="bi bi-person me-2"></i> My Profile</a></li>
                 <li><a class="dropdown-item" href="/member/loans"><i class="bi bi-book me-2"></i> Borrowed Books</a></li>
               <% } else { %>
@@ -94,7 +99,7 @@
               <li><hr class="dropdown-divider"></li>
               <li>
                 <form action="/logout" method="POST" class="px-2">
-                  <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                  <input type="hidden" name="_csrf" value="<%= safeToken %>">
                   <button type="submit" class="btn btn-sm btn-outline-danger w-100 text-start">
                     <i class="bi bi-box-arrow-right me-2"></i> Sign Out
                   </button>
@@ -104,7 +109,7 @@
           </li>
         <% } else { %>
           <li class="nav-item">
-            <a class="nav-link <%= currentPath === '/login' ? 'active' : '' %>" href="/login">
+            <a class="nav-link <%= safePath === '/login' ? 'active' : '' %>" href="/login">
               <i class="bi bi-box-arrow-in-right me-1"></i> Sign In
             </a>
           </li>

@@ -31,6 +31,11 @@ function csrfProtection(req, res, next) {
     (req.query && req.query._csrf);
 
   if (!clientToken || clientToken !== req.session.csrfToken) {
+    res.locals.currentUser = res.locals.currentUser || (req.session && req.session.user) || null;
+    res.locals.currentPath = res.locals.currentPath || req.path || '/';
+    res.locals.appName = res.locals.appName || 'BiblioTech Library';
+    res.locals.csrfToken = res.locals.csrfToken || req.session.csrfToken || '';
+
     if (req.accepts('html')) {
       return res.status(403).render('errors/403', {
         title: '403 - Forbidden',

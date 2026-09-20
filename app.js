@@ -14,6 +14,9 @@ const librarianRoutes = require('./routes/librarianRoutes');
 
 const app = express();
 
+// Trust reverse proxy (Render, Cloudflare, Heroku, Vercel) so secure cookies & req.secure work properly
+app.set('trust proxy', 1);
+
 // View engine setup
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
@@ -55,11 +58,11 @@ app.use((req, res, next) => {
 // Session configuration
 app.use(createSessionMiddleware());
 
+// View locals (user, alerts, app name) - initialized immediately after session
+app.use(viewLocals);
+
 // CSRF token generation and validation
 app.use(csrfProtection);
-
-// View locals (user, alerts, app name)
-app.use(viewLocals);
 
 // Mount Routes
 app.use('/', authRoutes);

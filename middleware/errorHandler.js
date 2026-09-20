@@ -1,5 +1,12 @@
 function notFoundHandler(req, res, next) {
   res.status(404);
+  res.locals.currentUser = res.locals.currentUser || (req.session && req.session.user) || null;
+  res.locals.currentPath = res.locals.currentPath || req.path || '/';
+  res.locals.appName = res.locals.appName || 'BiblioTech Library';
+  res.locals.csrfToken = res.locals.csrfToken || (req.session && req.session.csrfToken) || '';
+  res.locals.success_msg = res.locals.success_msg || null;
+  res.locals.error_msg = res.locals.error_msg || null;
+
   if (req.accepts('html')) {
     return res.render('errors/404', {
       title: '404 - Page Not Found',
@@ -40,6 +47,14 @@ function errorHandler(err, req, res, next) {
     statusCode === 500 && process.env.NODE_ENV === 'production'
       ? 'An unexpected error occurred on our server. Please try again later.'
       : err.message || 'Something went wrong.';
+
+  // Ensure safe fallback locals so error templates never crash on undefined variables
+  res.locals.currentUser = res.locals.currentUser || (req.session && req.session.user) || null;
+  res.locals.currentPath = res.locals.currentPath || req.path || '/';
+  res.locals.appName = res.locals.appName || 'BiblioTech Library';
+  res.locals.csrfToken = res.locals.csrfToken || (req.session && req.session.csrfToken) || '';
+  res.locals.success_msg = res.locals.success_msg || null;
+  res.locals.error_msg = res.locals.error_msg || null;
 
   if (req.accepts('html')) {
     const templateName = [400, 403, 404].includes(statusCode) ? `errors/${statusCode}` : 'errors/500';

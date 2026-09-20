@@ -54,7 +54,11 @@ class AuthController {
           role: user.role
         };
         req.session.success_msg = `Welcome to BiblioTech Library, ${user.name}! Your account has been created.`;
-        res.redirect('/member/dashboard');
+
+        req.session.save((saveErr) => {
+          if (saveErr) return next(saveErr);
+          res.redirect('/member/dashboard');
+        });
       });
     } catch (error) {
       next(error);
@@ -121,14 +125,18 @@ class AuthController {
 
         req.session.success_msg = `Welcome back, ${user.name}!`;
 
-        if (returnTo && returnTo.startsWith('/') && !returnTo.startsWith('//')) {
-          return res.redirect(returnTo);
-        }
+        req.session.save((saveErr) => {
+          if (saveErr) return next(saveErr);
 
-        if (normalizedRole === ROLES.LIBRARIAN) {
-          return res.redirect('/librarian/dashboard');
-        }
-        return res.redirect('/member/dashboard');
+          if (returnTo && returnTo.startsWith('/') && !returnTo.startsWith('//')) {
+            return res.redirect(returnTo);
+          }
+
+          if (normalizedRole === ROLES.LIBRARIAN) {
+            return res.redirect('/librarian/dashboard');
+          }
+          return res.redirect('/member/dashboard');
+        });
       });
     } catch (error) {
       next(error);
