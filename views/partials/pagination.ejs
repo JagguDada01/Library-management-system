@@ -1,0 +1,35 @@
+<% if (typeof pagination !== 'undefined' && pagination.totalPages > 1) { %>
+  <nav aria-label="Page navigation" class="mt-4">
+    <ul class="pagination justify-content-center">
+      <!-- Previous Page Link -->
+      <li class="page-item <%= !pagination.hasPrevPage ? 'disabled' : '' %>">
+        <a class="page-link" href="?page=<%= pagination.page - 1 %><%= typeof query !== 'undefined' ? (query.search ? '&search=' + encodeURIComponent(query.search) : '') + (query.category && query.category !== 'all' ? '&category=' + encodeURIComponent(query.category) : '') + (query.availability && query.availability !== 'all' ? '&availability=' + encodeURIComponent(query.availability) : '') + (query.status && query.status !== 'all' ? '&status=' + encodeURIComponent(query.status) : '') : '' %>" aria-label="Previous">
+          <span aria-hidden="true">&laquo; Prev</span>
+        </a>
+      </li>
+
+      <!-- Page Numbers -->
+      <% for (let i = 1; i <= pagination.totalPages; i++) { %>
+        <% if (i === 1 || i === pagination.totalPages || (i >= pagination.page - 2 && i <= pagination.page + 2)) { %>
+          <li class="page-item <%= pagination.page === i ? 'active' : '' %>">
+            <a class="page-link" href="?page=<%= i %><%= typeof query !== 'undefined' ? (query.search ? '&search=' + encodeURIComponent(query.search) : '') + (query.category && query.category !== 'all' ? '&category=' + encodeURIComponent(query.category) : '') + (query.availability && query.availability !== 'all' ? '&availability=' + encodeURIComponent(query.availability) : '') + (query.status && query.status !== 'all' ? '&status=' + encodeURIComponent(query.status) : '') : '' %>">
+              <%= i %>
+            </a>
+          </li>
+        <% } else if (i === pagination.page - 3 || i === pagination.page + 3) { %>
+          <li class="page-item disabled"><span class="page-link">...</span></li>
+        <% } %>
+      <% } %>
+
+      <!-- Next Page Link -->
+      <li class="page-item <%= !pagination.hasNextPage ? 'disabled' : '' %>">
+        <a class="page-link" href="?page=<%= pagination.page + 1 %><%= typeof query !== 'undefined' ? (query.search ? '&search=' + encodeURIComponent(query.search) : '') + (query.category && query.category !== 'all' ? '&category=' + encodeURIComponent(query.category) : '') + (query.availability && query.availability !== 'all' ? '&availability=' + encodeURIComponent(query.availability) : '') + (query.status && query.status !== 'all' ? '&status=' + encodeURIComponent(query.status) : '') : '' %>" aria-label="Next">
+          <span aria-hidden="true">Next &raquo;</span>
+        </a>
+      </li>
+    </ul>
+    <div class="text-center text-muted small">
+      Showing page <strong><%= pagination.page %></strong> of <strong><%= pagination.totalPages %></strong> (<%= pagination.total %> total items)
+    </div>
+  </nav>
+<% } %>

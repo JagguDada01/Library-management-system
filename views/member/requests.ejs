@@ -1,0 +1,97 @@
+<%- include('../partials/header') %>
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <div>
+    <h2 class="fw-bold mb-1"><i class="bi bi-clock-history text-primary me-2"></i>My Book Requests</h2>
+    <p class="text-muted mb-0">View the status of your book issue requests</p>
+  </div>
+  <a href="/books" class="btn btn-outline-primary">
+    <i class="bi bi-search me-1"></i> Browse Catalog
+  </a>
+</div>
+
+<% if (requests && requests.length > 0) { %>
+  <div class="card border-0 shadow-sm">
+    <div class="card-body p-0">
+      <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+          <thead class="table-light">
+            <tr>
+              <th>Requested Book</th>
+              <th>Date Submitted</th>
+              <th>Status</th>
+              <th>Processed Date</th>
+              <th>Outcome / Reason</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% requests.forEach(function(req) { %>
+              <tr>
+                <td>
+                  <% if (req.book) { %>
+                    <div class="fw-bold">
+                      <a href="/books/<%= req.book._id %>" class="text-dark text-decoration-none">
+                        <%= req.book.title %>
+                      </a>
+                    </div>
+                    <div class="text-muted small">by <%= req.book.author %> (ISBN: <%= req.book.ISBN %>)</div>
+                  <% } else { %>
+                    <span class="text-muted fst-italic">Book no longer in catalog</span>
+                  <% } %>
+                </td>
+                <td><%= new Date(req.requestedAt).toLocaleString() %></td>
+                <td>
+                  <% if (req.status === 'PENDING') { %>
+                    <span class="badge badge-pending px-3 py-1">
+                      <i class="bi bi-hourglass-split me-1"></i> PENDING
+                    </span>
+                  <% } else if (req.status === 'APPROVED') { %>
+                    <span class="badge badge-approved px-3 py-1">
+                      <i class="bi bi-check-circle-fill me-1"></i> APPROVED
+                    </span>
+                  <% } else { %>
+                    <span class="badge badge-rejected px-3 py-1">
+                      <i class="bi bi-x-circle-fill me-1"></i> REJECTED
+                    </span>
+                  <% } %>
+                </td>
+                <td>
+                  <%= req.processedAt ? new Date(req.processedAt).toLocaleString() : 'Pending review' %>
+                </td>
+                <td>
+                  <% if (req.status === 'REJECTED') { %>
+                    <span class="text-danger small fw-semibold">
+                      <i class="bi bi-info-circle me-1"></i><%= req.rejectionReason || 'No reason provided' %>
+                    </span>
+                  <% } else if (req.status === 'APPROVED') { %>
+                    <span class="text-success small fw-semibold">
+                      <i class="bi bi-check-lg me-1"></i>Issued! Please collect from circulation desk.
+                    </span>
+                  <% } else { %>
+                    <span class="text-muted small">Awaiting librarian review</span>
+                  <% } %>
+                </td>
+              </tr>
+            <% }); %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <%- include('../partials/pagination') %>
+
+<% } else { %>
+  <div class="card border-0 shadow-sm">
+    <div class="card-body empty-state">
+      <i class="bi bi-inbox"></i>
+      <h4 class="fw-bold">No Requests Made</h4>
+      <p class="text-muted">You haven't requested any books yet. Discover exciting reads in our catalog!</p>
+      <a href="/books" class="btn btn-primary px-4">
+        <i class="bi bi-compass me-1"></i> Browse Library Catalog
+      </a>
+    </div>
+  </div>
+<% } %>
+
+<%- include('../partials/footer') %>

@@ -1,0 +1,120 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top shadow-sm py-2">
+  <div class="container">
+    <a class="navbar-brand d-flex align-items-center gap-2" href="/">
+      <i class="bi bi-book-half fs-4 text-warning"></i>
+      <span>Biblio<strong class="text-warning">Tech</strong></span>
+    </a>
+
+    <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMain">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarMain">
+      <!-- Public / Catalog Links -->
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li class="nav-item">
+          <a class="nav-link <%= currentPath === '/' || currentPath.startsWith('/books') ? 'active' : '' %>" href="/books">
+            <i class="bi bi-compass me-1"></i> Browse Catalog
+          </a>
+        </li>
+
+        <% if (currentUser && currentUser.role === 'MEMBER') { %>
+          <li class="nav-item">
+            <a class="nav-link <%= currentPath === '/member/dashboard' ? 'active' : '' %>" href="/member/dashboard">
+              <i class="bi bi-speedometer2 me-1"></i> Dashboard
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link <%= currentPath === '/member/loans' ? 'active' : '' %>" href="/member/loans">
+              <i class="bi bi-journal-bookmark me-1"></i> My Loans
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link <%= currentPath === '/member/requests' ? 'active' : '' %>" href="/member/requests">
+              <i class="bi bi-clock-history me-1"></i> My Requests
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link <%= currentPath === '/member/history' ? 'active' : '' %>" href="/member/history">
+              <i class="bi bi-archive me-1"></i> History
+            </a>
+          </li>
+        <% } %>
+
+        <% if (currentUser && currentUser.role === 'LIBRARIAN') { %>
+          <li class="nav-item">
+            <a class="nav-link <%= currentPath === '/librarian/dashboard' ? 'active' : '' %>" href="/librarian/dashboard">
+              <i class="bi bi-graph-up-arrow me-1"></i> Analytics
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link <%= currentPath.startsWith('/librarian/books') ? 'active' : '' %>" href="/librarian/books">
+              <i class="bi bi-collection me-1"></i> Books Inventory
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link <%= currentPath.startsWith('/librarian/requests') ? 'active' : '' %>" href="/librarian/requests">
+              <i class="bi bi-inbox me-1"></i> Issue Requests
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link <%= currentPath.startsWith('/librarian/loans') ? 'active' : '' %>" href="/librarian/loans">
+              <i class="bi bi-arrow-left-right me-1"></i> Loans & Returns
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link <%= currentPath === '/librarian/members' ? 'active' : '' %>" href="/librarian/members">
+              <i class="bi bi-people me-1"></i> Members
+            </a>
+          </li>
+        <% } %>
+      </ul>
+
+      <!-- User Actions / Auth -->
+      <ul class="navbar-nav ms-auto align-items-lg-center">
+        <% if (currentUser) { %>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle d-flex align-items-center gap-2" href="#" role="button" data-bs-toggle="dropdown">
+              <div class="rounded-circle bg-secondary d-flex align-items-center justify-content-center text-white" style="width: 32px; height: 32px; font-size: 0.85rem;">
+                <%= currentUser.name.charAt(0).toUpperCase() %>
+              </div>
+              <span class="d-none d-sm-inline"><%= currentUser.name %></span>
+              <span class="badge <%= currentUser.role === 'LIBRARIAN' ? 'bg-danger' : 'bg-primary' %> ms-1" style="font-size: 0.7rem;">
+                <%= currentUser.role %>
+              </span>
+            </a>
+            <ul class="dropdown-menu dropdown-menu-end shadow">
+              <li class="dropdown-header">Signed in as <strong><%= currentUser.email %></strong></li>
+              <% if (currentUser.role === 'MEMBER') { %>
+                <li><a class="dropdown-item" href="/member/profile"><i class="bi bi-person me-2"></i> My Profile</a></li>
+                <li><a class="dropdown-item" href="/member/loans"><i class="bi bi-book me-2"></i> Borrowed Books</a></li>
+              <% } else { %>
+                <li><a class="dropdown-item" href="/librarian/dashboard"><i class="bi bi-shield-check me-2"></i> Admin Panel</a></li>
+              <% } %>
+              <li><hr class="dropdown-divider"></li>
+              <li>
+                <form action="/logout" method="POST" class="px-2">
+                  <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                  <button type="submit" class="btn btn-sm btn-outline-danger w-100 text-start">
+                    <i class="bi bi-box-arrow-right me-2"></i> Sign Out
+                  </button>
+                </form>
+              </li>
+            </ul>
+          </li>
+        <% } else { %>
+          <li class="nav-item">
+            <a class="nav-link <%= currentPath === '/login' ? 'active' : '' %>" href="/login">
+              <i class="bi bi-box-arrow-in-right me-1"></i> Sign In
+            </a>
+          </li>
+          <li class="nav-item ms-lg-2">
+            <a class="btn btn-warning btn-sm fw-semibold text-dark px-3" href="/register">
+              <i class="bi bi-person-plus me-1"></i> Join Library
+            </a>
+          </li>
+        <% } %>
+      </ul>
+    </div>
+  </div>
+</nav>

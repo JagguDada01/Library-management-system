@@ -1,0 +1,71 @@
+<%- include('../../partials/header') %>
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <div>
+    <h2 class="fw-bold mb-1"><i class="bi bi-people text-primary me-2"></i>Registered Library Members</h2>
+    <p class="text-muted mb-0">Overview of all active library member accounts and their borrowing metrics</p>
+  </div>
+</div>
+
+<% if (members && members.length > 0) { %>
+  <div class="card border-0 shadow-sm">
+    <div class="card-body p-0">
+      <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+          <thead class="table-light">
+            <tr>
+              <th>Member Name</th>
+              <th>Email Address</th>
+              <th>Joined Date</th>
+              <th>Active Loans</th>
+              <th>Historical Loans</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% members.forEach(function(member) { %>
+              <tr>
+                <td>
+                  <div class="d-flex align-items-center gap-2">
+                    <div class="rounded-circle bg-primary bg-opacity-10 text-primary d-flex align-items-center justify-content-center fw-bold" style="width: 32px; height: 32px; font-size: 0.85rem;">
+                      <%= member.name.charAt(0).toUpperCase() %>
+                    </div>
+                    <div class="fw-bold"><%= member.name %></div>
+                  </div>
+                </td>
+                <td><code><%= member.email %></code></td>
+                <td><%= new Date(member.createdAt).toLocaleDateString() %></td>
+                <td>
+                  <span class="badge <%= member.activeLoansCount >= 5 ? 'bg-danger' : (member.activeLoansCount > 0 ? 'bg-primary' : 'bg-light text-muted border') %> px-2 py-1">
+                    <%= member.activeLoansCount %> active
+                  </span>
+                </td>
+                <td>
+                  <span class="text-muted"><%= member.totalLoansCount %> all-time</span>
+                </td>
+                <td>
+                  <span class="badge bg-success-subtle text-success border border-success-subtle">
+                    Active Member
+                  </span>
+                </td>
+              </tr>
+            <% }); %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <%- include('../../partials/pagination') %>
+
+<% } else { %>
+  <div class="card border-0 shadow-sm">
+    <div class="card-body empty-state">
+      <i class="bi bi-people"></i>
+      <h4 class="fw-bold">No Members Found</h4>
+      <p class="text-muted">No registered member accounts currently exist.</p>
+    </div>
+  </div>
+<% } %>
+
+<%- include('../../partials/footer') %>

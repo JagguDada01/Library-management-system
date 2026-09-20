@@ -1,0 +1,112 @@
+<%- include('../../partials/header') %>
+
+<div class="row justify-content-center">
+  <div class="col-lg-8">
+    <div class="d-flex align-items-center justify-content-between mb-3">
+      <div>
+        <h3 class="fw-bold mb-0"><i class="bi bi-plus-circle text-success me-2"></i>Add New Book</h3>
+        <p class="text-muted small mb-0">Enter the catalog details and initial copy inventory</p>
+      </div>
+      <a href="/librarian/books" class="btn btn-outline-secondary btn-sm">
+        <i class="bi bi-arrow-left me-1"></i> Back to Inventory
+      </a>
+    </div>
+
+    <div class="card border-0 shadow-sm rounded-4">
+      <div class="card-body p-4 p-md-5">
+        <form action="/librarian/books" method="POST" novalidate>
+          <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+
+          <div class="mb-3">
+            <label for="title" class="form-label fw-semibold">Book Title <span class="text-danger">*</span></label>
+            <input
+              type="text"
+              class="form-control"
+              id="title"
+              name="title"
+              value="<%= typeof formData !== 'undefined' && formData.title ? formData.title : '' %>"
+              placeholder="e.g., Clean Code: A Handbook of Agile Software Craftsmanship"
+              required
+            >
+          </div>
+
+          <div class="row g-3 mb-3">
+            <div class="col-md-6">
+              <label for="author" class="form-label fw-semibold">Author <span class="text-danger">*</span></label>
+              <input
+                type="text"
+                class="form-control"
+                id="author"
+                name="author"
+                value="<%= typeof formData !== 'undefined' && formData.author ? formData.author : '' %>"
+                placeholder="e.g., Robert C. Martin"
+                required
+              >
+            </div>
+
+            <div class="col-md-6">
+              <label for="ISBN" class="form-label fw-semibold">ISBN <span class="text-danger">*</span></label>
+              <input
+                type="text"
+                class="form-control"
+                id="ISBN"
+                name="ISBN"
+                value="<%= typeof formData !== 'undefined' && formData.ISBN ? formData.ISBN : '' %>"
+                placeholder="e.g., 978-0132350884"
+                required
+              >
+            </div>
+          </div>
+
+          <div class="row g-3 mb-3">
+            <div class="col-md-6">
+              <label for="category" class="form-label fw-semibold">Category <span class="text-danger">*</span></label>
+              <select class="form-select" id="category" name="category" required>
+                <option value="" disabled <%= !formData || !formData.category ? 'selected' : '' %>>Choose a category...</option>
+                <% categories.forEach(function(cat) { %>
+                  <option value="<%= cat %>" <%= typeof formData !== 'undefined' && formData.category === cat ? 'selected' : '' %>>
+                    <%= cat %>
+                  </option>
+                <% }); %>
+              </select>
+            </div>
+
+            <div class="col-md-6">
+              <label for="totalCopies" class="form-label fw-semibold">Total Physical Copies <span class="text-danger">*</span></label>
+              <input
+                type="number"
+                class="form-control"
+                id="totalCopies"
+                name="totalCopies"
+                min="0"
+                value="<%= typeof formData !== 'undefined' && formData.totalCopies !== undefined ? formData.totalCopies : '5' %>"
+                required
+              >
+              <div class="form-text small">All copies will initially be marked as available.</div>
+            </div>
+          </div>
+
+          <div class="mb-4">
+            <label for="description" class="form-label fw-semibold">Book Summary / Description</label>
+            <textarea
+              class="form-control"
+              id="description"
+              name="description"
+              rows="4"
+              placeholder="Provide an overview of the book's contents, topics, or edition notes..."
+            ><%= typeof formData !== 'undefined' && formData.description ? formData.description : '' %></textarea>
+          </div>
+
+          <div class="d-flex justify-content-end gap-2">
+            <a href="/librarian/books" class="btn btn-outline-secondary px-4">Cancel</a>
+            <button type="submit" class="btn btn-success px-4 fw-semibold">
+              <i class="bi bi-check2-circle me-1"></i> Save Book to Catalog
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<%- include('../../partials/footer') %>

@@ -1,0 +1,273 @@
+<%- include('../partials/header') %>
+
+<div class="row mb-4 align-items-center">
+  <div class="col-md-7">
+    <h2 class="fw-bold mb-1">
+      <i class="bi bi-graph-up-arrow text-danger me-2"></i>Librarian Analytics & Operations
+    </h2>
+    <p class="text-muted mb-0">Overview of catalog health, circulation metrics, requests, and library revenue.</p>
+  </div>
+  <div class="col-md-5 text-md-end mt-3 mt-md-0">
+    <a href="/librarian/books/new" class="btn btn-success me-1">
+      <i class="bi bi-plus-circle me-1"></i> Add Book
+    </a>
+    <a href="/librarian/loans/issue" class="btn btn-primary">
+      <i class="bi bi-person-plus me-1"></i> Issue Book
+    </a>
+  </div>
+</div>
+
+<!-- Section 31 Metrics Grid -->
+<div class="row g-3 mb-4">
+  <!-- Total Book Titles -->
+  <div class="col-6 col-lg-3 col-md-4">
+    <div class="card stat-card stat-info h-100 p-3 shadow-sm">
+      <div class="d-flex justify-content-between align-items-start">
+        <div>
+          <div class="text-muted small text-uppercase fw-semibold">Book Titles</div>
+          <div class="fs-2 fw-bold text-dark"><%= stats.totalTitles %></div>
+        </div>
+        <div class="stat-icon bg-info bg-opacity-10 text-info">
+          <i class="bi bi-book"></i>
+        </div>
+      </div>
+      <div class="mt-2 small text-muted">Active unique titles</div>
+    </div>
+  </div>
+
+  <!-- Total Physical Copies -->
+  <div class="col-6 col-lg-3 col-md-4">
+    <div class="card stat-card stat-info h-100 p-3 shadow-sm">
+      <div class="d-flex justify-content-between align-items-start">
+        <div>
+          <div class="text-muted small text-uppercase fw-semibold">Physical Copies</div>
+          <div class="fs-2 fw-bold text-dark"><%= stats.totalPhysicalCopies %></div>
+        </div>
+        <div class="stat-icon bg-secondary bg-opacity-10 text-secondary">
+          <i class="bi bi-layers"></i>
+        </div>
+      </div>
+      <div class="mt-2 small text-muted">Across all catalog books</div>
+    </div>
+  </div>
+
+  <!-- Available Copies -->
+  <div class="col-6 col-lg-3 col-md-4">
+    <div class="card stat-card stat-success h-100 p-3 shadow-sm">
+      <div class="d-flex justify-content-between align-items-start">
+        <div>
+          <div class="text-muted small text-uppercase fw-semibold">Available Copies</div>
+          <div class="fs-2 fw-bold text-success"><%= stats.availableCopies %></div>
+        </div>
+        <div class="stat-icon bg-success bg-opacity-10 text-success">
+          <i class="bi bi-check2-square"></i>
+        </div>
+      </div>
+      <div class="mt-2 small text-muted">Ready for lending</div>
+    </div>
+  </div>
+
+  <!-- Currently Issued Copies -->
+  <div class="col-6 col-lg-3 col-md-4">
+    <div class="card stat-card stat-primary h-100 p-3 shadow-sm">
+      <div class="d-flex justify-content-between align-items-start">
+        <div>
+          <div class="text-muted small text-uppercase fw-semibold">Issued Copies</div>
+          <div class="fs-2 fw-bold text-primary"><%= stats.issuedBooksCount %></div>
+        </div>
+        <div class="stat-icon bg-primary bg-opacity-10 text-primary">
+          <i class="bi bi-arrow-up-right-circle"></i>
+        </div>
+      </div>
+      <div class="mt-2 small text-muted">Currently in circulation</div>
+    </div>
+  </div>
+
+  <!-- Pending Requests -->
+  <div class="col-6 col-lg-3 col-md-4">
+    <div class="card stat-card stat-warning h-100 p-3 shadow-sm">
+      <div class="d-flex justify-content-between align-items-start">
+        <div>
+          <div class="text-muted small text-uppercase fw-semibold">Pending Requests</div>
+          <div class="fs-2 fw-bold text-warning"><%= stats.pendingRequestsCount %></div>
+        </div>
+        <div class="stat-icon bg-warning bg-opacity-10 text-warning">
+          <i class="bi bi-inbox"></i>
+        </div>
+      </div>
+      <div class="mt-2 small">
+        <% if (stats.pendingRequestsCount > 0) { %>
+          <a href="/librarian/requests" class="text-warning fw-semibold text-decoration-none">Review Requests &rarr;</a>
+        <% } else { %>
+          <span class="text-muted">Inbox clear</span>
+        <% } %>
+      </div>
+    </div>
+  </div>
+
+  <!-- Overdue Books -->
+  <div class="col-6 col-lg-3 col-md-4">
+    <div class="card stat-card stat-danger h-100 p-3 shadow-sm">
+      <div class="d-flex justify-content-between align-items-start">
+        <div>
+          <div class="text-muted small text-uppercase fw-semibold">Overdue Loans</div>
+          <div class="fs-2 fw-bold text-danger"><%= stats.overdueCount %></div>
+        </div>
+        <div class="stat-icon bg-danger bg-opacity-10 text-danger">
+          <i class="bi bi-exclamation-triangle"></i>
+        </div>
+      </div>
+      <div class="mt-2 small">
+        <% if (stats.overdueCount > 0) { %>
+          <a href="/librarian/loans?status=OVERDUE" class="text-danger fw-semibold text-decoration-none">View Overdue &rarr;</a>
+        <% } else { %>
+          <span class="text-muted">No overdue books</span>
+        <% } %>
+      </div>
+    </div>
+  </div>
+
+  <!-- Total Members -->
+  <div class="col-6 col-lg-3 col-md-4">
+    <div class="card stat-card stat-info h-100 p-3 shadow-sm">
+      <div class="d-flex justify-content-between align-items-start">
+        <div>
+          <div class="text-muted small text-uppercase fw-semibold">Total Members</div>
+          <div class="fs-2 fw-bold text-dark"><%= stats.totalMembers %></div>
+        </div>
+        <div class="stat-icon bg-info bg-opacity-10 text-info">
+          <i class="bi bi-people"></i>
+        </div>
+      </div>
+      <div class="mt-2 small text-muted"><a href="/librarian/members" class="text-decoration-none">View Members &rarr;</a></div>
+    </div>
+  </div>
+
+  <!-- Total Outstanding Fines -->
+  <div class="col-6 col-lg-3 col-md-4">
+    <div class="card stat-card stat-danger h-100 p-3 shadow-sm">
+      <div class="d-flex justify-content-between align-items-start">
+        <div>
+          <div class="text-muted small text-uppercase fw-semibold">Outstanding Fines</div>
+          <div class="fs-2 fw-bold text-danger">$<%= stats.totalAccruedFine.toFixed(2) %></div>
+        </div>
+        <div class="stat-icon bg-danger bg-opacity-10 text-danger">
+          <i class="bi bi-cash-stack"></i>
+        </div>
+      </div>
+      <div class="mt-2 small text-muted">All-time revenue: $<%= stats.totalFinesOverall.toFixed(2) %></div>
+    </div>
+  </div>
+</div>
+
+<div class="row g-4">
+  <!-- Section 32: Most Borrowed Books (Calculated from all historical loan records) -->
+  <div class="col-lg-7">
+    <div class="card border-0 shadow-sm h-100">
+      <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
+        <h5 class="fw-bold mb-0">
+          <i class="bi bi-fire text-danger me-2"></i>Most Borrowed Titles
+        </h5>
+        <span class="badge bg-light text-secondary border">Historical Loan Records</span>
+      </div>
+      <div class="card-body p-0">
+        <% if (mostBorrowedBooks && mostBorrowedBooks.length > 0) { %>
+          <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+              <thead class="table-light">
+                <tr>
+                  <th>Rank & Book Title</th>
+                  <th>Category</th>
+                  <th>Total Borrows</th>
+                  <th>Stock Available</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% mostBorrowedBooks.forEach(function(item, idx) { %>
+                  <tr>
+                    <td>
+                      <div class="d-flex align-items-center gap-2">
+                        <span class="badge rounded-pill <%= idx === 0 ? 'bg-warning text-dark' : (idx === 1 ? 'bg-secondary' : 'bg-light text-dark border') %>" style="width: 26px; height: 26px; display: inline-flex; align-items: center; justify-content: center;">
+                          <%= idx + 1 %>
+                        </span>
+                        <div>
+                          <div class="fw-bold">
+                            <a href="/books/<%= item._id %>" class="text-dark text-decoration-none">
+                              <%= item.title %>
+                            </a>
+                          </div>
+                          <small class="text-muted">by <%= item.author %></small>
+                        </div>
+                      </div>
+                    </td>
+                    <td><span class="badge bg-light text-dark border"><%= item.category %></span></td>
+                    <td>
+                      <span class="badge bg-primary-subtle text-primary border border-primary-subtle fs-6 px-2 py-1">
+                        <i class="bi bi-arrow-repeat me-1"></i> <%= item.borrowCount %> loans
+                      </span>
+                    </td>
+                    <td>
+                      <span class="<%= item.availableCopies > 0 ? 'text-success' : 'text-danger' %> fw-semibold">
+                        <%= item.availableCopies %> / <%= item.totalCopies %>
+                      </span>
+                    </td>
+                  </tr>
+                <% }); %>
+              </tbody>
+            </table>
+          </div>
+        <% } else { %>
+          <div class="empty-state py-4">
+            <i class="bi bi-bar-chart display-6"></i>
+            <p class="mb-0">No historical loan data recorded yet.</p>
+          </div>
+        <% } %>
+      </div>
+    </div>
+  </div>
+
+  <!-- Overdue Loans Alert Panel -->
+  <div class="col-lg-5">
+    <div class="card border-0 shadow-sm h-100">
+      <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
+        <h5 class="fw-bold mb-0">
+          <i class="bi bi-exclamation-octagon text-danger me-2"></i>Urgent Overdue Loans
+        </h5>
+        <a href="/librarian/loans?status=OVERDUE" class="btn btn-sm btn-link text-decoration-none">All Overdue &rarr;</a>
+      </div>
+      <div class="card-body p-0">
+        <% if (overdueLoans && overdueLoans.length > 0) { %>
+          <div class="list-group list-group-flush">
+            <% overdueLoans.forEach(function(loan) { %>
+              <div class="list-group-item p-3">
+                <div class="d-flex justify-content-between align-items-start mb-1">
+                  <div class="fw-bold text-truncate" style="max-width: 240px;">
+                    <%= loan.book ? loan.book.title : 'Book Title' %>
+                  </div>
+                  <span class="badge badge-overdue"><%= loan.overdueDays %>d overdue</span>
+                </div>
+                <div class="small text-muted mb-2">
+                  Borrowed by: <strong><%= loan.member ? loan.member.name : 'Member' %></strong> (<%= loan.member ? loan.member.email : '' %>)
+                </div>
+                <div class="d-flex justify-content-between align-items-center small">
+                  <span class="text-danger fw-semibold">Fine: $<%= loan.fine.toFixed(2) %></span>
+                  <form action="/librarian/loans/<%= loan._id %>/return" method="POST" data-confirm="Process return for <%= loan.book ? loan.book.title : 'this book' %>? Fine of $<%= loan.fine.toFixed(2) %> will be recorded.">
+                    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                    <button type="submit" class="btn btn-sm btn-outline-success py-0">Process Return</button>
+                  </form>
+                </div>
+              </div>
+            <% }); %>
+          </div>
+        <% } else { %>
+          <div class="empty-state py-4">
+            <i class="bi bi-check-circle-fill text-success display-6"></i>
+            <p class="mb-0 text-success fw-semibold">No loans are currently overdue!</p>
+          </div>
+        <% } %>
+      </div>
+    </div>
+  </div>
+</div>
+
+<%- include('../partials/footer') %>

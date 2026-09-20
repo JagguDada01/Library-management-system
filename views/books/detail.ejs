@@ -1,0 +1,122 @@
+<%- include('../partials/header') %>
+
+<div class="row justify-content-center">
+  <div class="col-lg-9">
+    <!-- Breadcrumb -->
+    <nav aria-label="breadcrumb" class="mb-3">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="/books" class="text-decoration-none">Catalog</a></li>
+        <li class="breadcrumb-item"><a href="/books?category=<%= encodeURIComponent(book.category) %>" class="text-decoration-none"><%= book.category %></a></li>
+        <li class="breadcrumb-item active" aria-current="page"><%= book.title %></li>
+      </ol>
+    </nav>
+
+    <div class="card border-0 shadow-sm overflow-hidden mb-4">
+      <div class="row g-0">
+        <!-- Visual Cover -->
+        <div class="col-md-4 bg-dark text-white d-flex flex-column align-items-center justify-content-center p-4 text-center">
+          <i class="bi bi-book-half display-1 text-warning mb-3"></i>
+          <span class="badge bg-warning text-dark px-3 py-2 fw-semibold fs-6 mb-2">
+            <%= typeof book.category === 'object' && book.category ? book.category.name : (book.category || 'General') %>
+          </span>
+          <div class="text-light small opacity-75">ISBN: <%= book.ISBN || book.isbn %></div>
+        </div>
+
+        <!-- Book Details -->
+        <div class="col-md-8">
+          <div class="card-body p-4 p-md-5">
+            <div class="d-flex justify-content-between align-items-start mb-3">
+              <div>
+                <h2 class="fw-bold mb-1"><%= book.title %></h2>
+                <div class="text-muted fs-5">
+                  <i class="bi bi-pen me-1"></i> <%= book.author %>
+                </div>
+              </div>
+
+              <% if (book.availableCopies > 0 && book.isActive) { %>
+                <span class="badge bg-success-subtle text-success border border-success-subtle px-3 py-2 fs-6">
+                  <i class="bi bi-check-circle-fill me-1"></i> In Stock
+                </span>
+              <% } else if (!book.isActive) { %>
+                <span class="badge bg-secondary px-3 py-2 fs-6">
+                  <i class="bi bi-archive-fill me-1"></i> Archived
+                </span>
+              <% } else { %>
+                <span class="badge bg-danger-subtle text-danger border border-danger-subtle px-3 py-2 fs-6">
+                  <i class="bi bi-x-circle-fill me-1"></i> Out of Stock
+                </span>
+              <% } %>
+            </div>
+
+            <!-- Copies breakdown -->
+            <div class="row g-3 my-3">
+              <div class="col-sm-6">
+                <div class="p-3 bg-light rounded-3 text-center border">
+                  <div class="text-muted small text-uppercase fw-semibold">Available Copies</div>
+                  <div class="fs-3 fw-bold <%= book.availableCopies > 0 ? 'text-success' : 'text-danger' %>">
+                    <%= book.availableCopies %>
+                  </div>
+                </div>
+              </div>
+              <div class="col-sm-6">
+                <div class="p-3 bg-light rounded-3 text-center border">
+                  <div class="text-muted small text-uppercase fw-semibold">Total Physical Copies</div>
+                  <div class="fs-3 fw-bold text-dark"><%= book.totalCopies %></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Description -->
+            <h5 class="fw-bold mt-4 mb-2">About this Book</h5>
+            <p class="text-secondary mb-4 leading-relaxed">
+              <%= book.description || 'No detailed description available for this title.' %>
+            </p>
+
+            <!-- Action Buttons based on Role and Status -->
+            <div class="pt-3 border-top d-flex flex-wrap gap-2 align-items-center">
+              <% if (!currentUser) { %>
+                <a href="/login?returnTo=/books/<%= book._id %>" class="btn btn-primary px-4">
+                  <i class="bi bi-box-arrow-in-right me-1"></i> Sign In to Request Book
+                </a>
+              <% } else if (currentUser.role === 'MEMBER') { %>
+                <% if (userHasActiveLoan) { %>
+                  <div class="alert alert-info py-2 px-3 mb-0 d-flex align-items-center">
+                    <i class="bi bi-info-circle-fill me-2 fs-5"></i>
+                    <span>You currently have an active loan for this book.</span>
+                    <a href="/member/loans" class="btn btn-sm btn-info ms-3 text-white">View in Loans</a>
+                  </div>
+                <% } else if (userHasPendingRequest) { %>
+                  <div class="alert alert-warning py-2 px-3 mb-0 d-flex align-items-center">
+                    <i class="bi bi-clock-history me-2 fs-5"></i>
+                    <span>Your issue request for this book is currently <strong>PENDING</strong> review.</span>
+                    <a href="/member/requests" class="btn btn-sm btn-warning ms-3">View Requests</a>
+                  </div>
+                <% } else if (book.availableCopies > 0 && book.isActive) { %>
+                  <form action="/member/books/<%= book._id %>/request" method="POST">
+                    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                    <button type="submit" class="btn btn-primary btn-lg px-4 fw-semibold">
+                      <i class="bi bi-send-plus me-1"></i> Request to Borrow
+                    </button>
+                  </form>
+                <% } else { %>
+                  <button class="btn btn-secondary btn-lg px-4" disabled>
+                    <i class="bi bi-slash-circle me-1"></i> Currently Unavailable
+                  </button>
+                <% } %>
+              <% } else if (currentUser.role === 'LIBRARIAN') { %>
+                <a href="/librarian/books/<%= book._id %>/edit" class="btn btn-primary">
+                  <i class="bi bi-pencil-square me-1"></i> Edit Book & Inventory
+                </a>
+                <a href="/librarian/books" class="btn btn-outline-secondary">
+                  <i class="bi bi-arrow-left me-1"></i> Back to Inventory
+                </a>
+              <% } %>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<%- include('../partials/footer') %>

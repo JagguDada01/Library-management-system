@@ -1,0 +1,264 @@
+<%- include('../partials/header') %>
+
+<div class="row mb-4 align-items-center">
+  <div class="col-md-8">
+    <h2 class="fw-bold mb-1">
+      <i class="bi bi-speedometer2 text-primary me-2"></i>Member Dashboard
+    </h2>
+    <p class="text-muted mb-0">Welcome back, <strong><%= currentUser.name %></strong>! Here is an overview of your library activity.</p>
+  </div>
+  <div class="col-md-4 text-md-end mt-3 mt-md-0">
+    <a href="/books" class="btn btn-primary">
+      <i class="bi bi-compass me-1"></i> Browse Catalog
+    </a>
+  </div>
+</div>
+
+<!-- Key Stat Cards (Section 30) -->
+<div class="row g-3 mb-4">
+  <!-- Active Loans -->
+  <div class="col-6 col-lg-2 col-md-4">
+    <div class="card stat-card stat-info h-100 p-3 shadow-sm">
+      <div class="d-flex justify-content-between align-items-start">
+        <div>
+          <div class="text-muted small text-uppercase fw-semibold">Active Loans</div>
+          <div class="fs-2 fw-bold text-dark"><%= stats.activeLoansCount %></div>
+        </div>
+        <div class="stat-icon bg-info bg-opacity-10 text-info">
+          <i class="bi bi-journal-bookmark"></i>
+        </div>
+      </div>
+      <div class="mt-2 small text-muted">Limit: 5 max</div>
+    </div>
+  </div>
+
+  <!-- Pending Requests -->
+  <div class="col-6 col-lg-2 col-md-4">
+    <div class="card stat-card stat-warning h-100 p-3 shadow-sm">
+      <div class="d-flex justify-content-between align-items-start">
+        <div>
+          <div class="text-muted small text-uppercase fw-semibold">Requests</div>
+          <div class="fs-2 fw-bold text-dark"><%= stats.pendingRequestsCount %></div>
+        </div>
+        <div class="stat-icon bg-warning bg-opacity-10 text-warning">
+          <i class="bi bi-clock-history"></i>
+        </div>
+      </div>
+      <div class="mt-2 small text-muted">Pending approval</div>
+    </div>
+  </div>
+
+  <!-- Overdue Books -->
+  <div class="col-6 col-lg-2 col-md-4">
+    <div class="card stat-card stat-danger h-100 p-3 shadow-sm">
+      <div class="d-flex justify-content-between align-items-start">
+        <div>
+          <div class="text-muted small text-uppercase fw-semibold">Overdue</div>
+          <div class="fs-2 fw-bold <%= stats.overdueCount > 0 ? 'text-danger' : 'text-dark' %>"><%= stats.overdueCount %></div>
+        </div>
+        <div class="stat-icon bg-danger bg-opacity-10 text-danger">
+          <i class="bi bi-exclamation-octagon"></i>
+        </div>
+      </div>
+      <div class="mt-2 small <%= stats.overdueCount > 0 ? 'text-danger fw-semibold' : 'text-muted' %>">
+        <%= stats.overdueCount > 0 ? 'Requires return' : 'None overdue' %>
+      </div>
+    </div>
+  </div>
+
+  <!-- Books Due Soon -->
+  <div class="col-6 col-lg-2 col-md-4">
+    <div class="card stat-card stat-warning h-100 p-3 shadow-sm">
+      <div class="d-flex justify-content-between align-items-start">
+        <div>
+          <div class="text-muted small text-uppercase fw-semibold">Due Soon</div>
+          <div class="fs-2 fw-bold text-dark"><%= stats.dueSoonCount %></div>
+        </div>
+        <div class="stat-icon bg-warning bg-opacity-10 text-warning">
+          <i class="bi bi-calendar-event"></i>
+        </div>
+      </div>
+      <div class="mt-2 small text-muted">Within 3 days</div>
+    </div>
+  </div>
+
+  <!-- Total Borrowed Historical -->
+  <div class="col-6 col-lg-2 col-md-4">
+    <div class="card stat-card stat-success h-100 p-3 shadow-sm">
+      <div class="d-flex justify-content-between align-items-start">
+        <div>
+          <div class="text-muted small text-uppercase fw-semibold">Borrowed</div>
+          <div class="fs-2 fw-bold text-dark"><%= stats.totalBorrowedCount %></div>
+        </div>
+        <div class="stat-icon bg-success bg-opacity-10 text-success">
+          <i class="bi bi-check2-circle"></i>
+        </div>
+      </div>
+      <div class="mt-2 small text-muted">All-time books</div>
+    </div>
+  </div>
+
+  <!-- Current Accrued Fine -->
+  <div class="col-6 col-lg-2 col-md-4">
+    <div class="card stat-card <%= stats.currentFineTotal > 0 ? 'stat-danger' : 'stat-success' %> h-100 p-3 shadow-sm">
+      <div class="d-flex justify-content-between align-items-start">
+        <div>
+          <div class="text-muted small text-uppercase fw-semibold">Current Fine</div>
+          <div class="fs-2 fw-bold <%= stats.currentFineTotal > 0 ? 'text-danger' : 'text-success' %>">
+            $<%= stats.currentFineTotal.toFixed(2) %>
+          </div>
+        </div>
+        <div class="stat-icon <%= stats.currentFineTotal > 0 ? 'bg-danger bg-opacity-10 text-danger' : 'bg-success bg-opacity-10 text-success' %>">
+          <i class="bi bi-cash-stack"></i>
+        </div>
+      </div>
+      <div class="mt-2 small text-muted">$5 / day overdue</div>
+    </div>
+  </div>
+</div>
+
+<!-- Quick Actions Toolbar -->
+<div class="d-flex flex-wrap gap-2 mb-4">
+  <a href="/books" class="btn btn-outline-primary btn-sm px-3">
+    <i class="bi bi-search me-1"></i> Browse Books
+  </a>
+  <a href="/member/loans" class="btn btn-outline-secondary btn-sm px-3">
+    <i class="bi bi-journal-bookmark me-1"></i> My Loans (<%= stats.activeLoansCount %>)
+  </a>
+  <a href="/member/requests" class="btn btn-outline-secondary btn-sm px-3">
+    <i class="bi bi-clock-history me-1"></i> My Requests (<%= stats.pendingRequestsCount %>)
+  </a>
+  <a href="/member/history" class="btn btn-outline-secondary btn-sm px-3">
+    <i class="bi bi-archive me-1"></i> Borrowing History
+  </a>
+</div>
+
+<!-- Active Loans Section -->
+<div class="card border-0 shadow-sm mb-4">
+  <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
+    <h5 class="fw-bold mb-0"><i class="bi bi-book me-2 text-primary"></i>Currently Borrowed Books</h5>
+    <a href="/member/loans" class="btn btn-sm btn-link text-decoration-none">View All Active &rarr;</a>
+  </div>
+  <div class="card-body p-0">
+    <% if (activeLoans && activeLoans.length > 0) { %>
+      <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+          <thead class="table-light">
+            <tr>
+              <th>Book Title</th>
+              <th>Issued On</th>
+              <th>Due Date</th>
+              <th>Status</th>
+              <th>Current Fine</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% activeLoans.forEach(function(loan) { %>
+              <tr>
+                <td>
+                  <div class="fw-bold">
+                    <a href="/books/<%= loan.book._id %>" class="text-decoration-none text-dark">
+                      <%= loan.book.title %>
+                    </a>
+                  </div>
+                  <div class="text-muted small">by <%= loan.book.author %> (ISBN: <%= loan.book.ISBN %>)</div>
+                </td>
+                <td><%= new Date(loan.issuedAt).toLocaleDateString() %></td>
+                <td>
+                  <span class="<%= loan.isOverdue ? 'text-danger fw-bold' : (loan.isDueSoon ? 'text-warning fw-bold' : '') %>">
+                    <%= new Date(loan.dueDate).toLocaleDateString() %>
+                  </span>
+                </td>
+                <td>
+                  <% if (loan.isOverdue) { %>
+                    <span class="badge badge-overdue px-2 py-1">
+                      <i class="bi bi-exclamation-triangle-fill me-1"></i> OVERDUE (<%= loan.overdueDays %>d)
+                    </span>
+                  <% } else if (loan.isDueSoon) { %>
+                    <span class="badge bg-warning text-dark px-2 py-1">
+                      <i class="bi bi-clock me-1"></i> Due Soon
+                    </span>
+                  <% } else { %>
+                    <span class="badge badge-issued px-2 py-1">
+                      <i class="bi bi-check2 me-1"></i> On Loan
+                    </span>
+                  <% } %>
+                </td>
+                <td>
+                  <% if (loan.currentFine > 0) { %>
+                    <span class="text-danger fw-bold">$<%= loan.currentFine.toFixed(2) %></span>
+                  <% } else { %>
+                    <span class="text-muted">$0.00</span>
+                  <% } %>
+                </td>
+              </tr>
+            <% }); %>
+          </tbody>
+        </table>
+      </div>
+    <% } else { %>
+      <div class="empty-state py-4">
+        <i class="bi bi-journal-check display-6"></i>
+        <p class="mb-2">You have no currently borrowed books.</p>
+        <a href="/books" class="btn btn-sm btn-primary">Find a Book to Borrow</a>
+      </div>
+    <% } %>
+  </div>
+</div>
+
+<!-- Recent Requests Section -->
+<div class="card border-0 shadow-sm">
+  <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
+    <h5 class="fw-bold mb-0"><i class="bi bi-clock-history me-2 text-warning"></i>Recent Issue Requests</h5>
+    <a href="/member/requests" class="btn btn-sm btn-link text-decoration-none">View All Requests &rarr;</a>
+  </div>
+  <div class="card-body p-0">
+    <% if (recentRequests && recentRequests.length > 0) { %>
+      <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+          <thead class="table-light">
+            <tr>
+              <th>Book Title</th>
+              <th>Requested Date</th>
+              <th>Status</th>
+              <th>Details</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% recentRequests.forEach(function(req) { %>
+              <tr>
+                <td class="fw-semibold"><%= req.book ? req.book.title : 'Book Title' %></td>
+                <td><%= new Date(req.requestedAt).toLocaleString() %></td>
+                <td>
+                  <% if (req.status === 'PENDING') { %>
+                    <span class="badge badge-pending px-2 py-1"><i class="bi bi-hourglass-split me-1"></i> PENDING</span>
+                  <% } else if (req.status === 'APPROVED') { %>
+                    <span class="badge badge-approved px-2 py-1"><i class="bi bi-check-circle me-1"></i> APPROVED</span>
+                  <% } else { %>
+                    <span class="badge badge-rejected px-2 py-1"><i class="bi bi-x-circle me-1"></i> REJECTED</span>
+                  <% } %>
+                </td>
+                <td class="small text-muted">
+                  <% if (req.status === 'REJECTED') { %>
+                    <span class="text-danger"><%= req.rejectionReason || 'No reason specified' %></span>
+                  <% } else if (req.status === 'APPROVED') { %>
+                    <span class="text-success">Issued & available in loans</span>
+                  <% } else { %>
+                    Awaiting librarian approval
+                  <% } %>
+                </td>
+              </tr>
+            <% }); %>
+          </tbody>
+        </table>
+      </div>
+    <% } else { %>
+      <div class="empty-state py-4">
+        <i class="bi bi-inbox display-6"></i>
+        <p class="mb-0">No recent book requests.</p>
+      </div>
+    <% } %>
+  </div>
+</div>
+
+<%- include('../partials/footer') %>

@@ -1,0 +1,144 @@
+<%- include('../../partials/header') %>
+
+<div class="row justify-content-center">
+  <div class="col-lg-8">
+    <div class="d-flex align-items-center justify-content-between mb-3">
+      <div>
+        <h3 class="fw-bold mb-0"><i class="bi bi-pencil-square text-primary me-2"></i>Edit Book</h3>
+        <p class="text-muted small mb-0">Update book details and manage inventory levels</p>
+      </div>
+      <a href="/librarian/books" class="btn btn-outline-secondary btn-sm">
+        <i class="bi bi-arrow-left me-1"></i> Back to Inventory
+      </a>
+    </div>
+
+    <!-- Inventory Invariant Info Banner (Edge Cases 6 & 7) -->
+    <div class="card bg-light border-0 shadow-sm mb-4">
+      <div class="card-body p-3">
+        <div class="d-flex align-items-center justify-content-between">
+          <div>
+            <div class="small fw-bold text-uppercase text-muted">Current Circulation Status</div>
+            <div class="fs-6 mt-1">
+              Currently Issued on Loan: <strong class="text-primary"><%= issuedCopies %></strong> copy/copies &bull;
+              Available on Shelf: <strong class="text-success"><%= book.availableCopies %></strong> copy/copies
+            </div>
+          </div>
+          <span class="badge bg-white text-secondary border px-3 py-2">
+            Minimum Total Copies: <strong><%= issuedCopies %></strong>
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <div class="card border-0 shadow-sm rounded-4">
+      <div class="card-body p-4 p-md-5">
+        <form action="/librarian/books/<%= book._id %>/update" method="POST" novalidate>
+          <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+
+          <div class="mb-3">
+            <label for="title" class="form-label fw-semibold">Book Title <span class="text-danger">*</span></label>
+            <input
+              type="text"
+              class="form-control"
+              id="title"
+              name="title"
+              value="<%= book.title %>"
+              required
+            >
+          </div>
+
+          <div class="row g-3 mb-3">
+            <div class="col-md-6">
+              <label for="author" class="form-label fw-semibold">Author <span class="text-danger">*</span></label>
+              <input
+                type="text"
+                class="form-control"
+                id="author"
+                name="author"
+                value="<%= book.author %>"
+                required
+              >
+            </div>
+
+            <div class="col-md-6">
+              <label for="ISBN" class="form-label fw-semibold">ISBN <span class="text-danger">*</span></label>
+              <input
+                type="text"
+                class="form-control"
+                id="ISBN"
+                name="ISBN"
+                value="<%= book.ISBN %>"
+                required
+              >
+            </div>
+          </div>
+
+          <div class="row g-3 mb-3">
+            <div class="col-md-6">
+              <label for="category" class="form-label fw-semibold">Category <span class="text-danger">*</span></label>
+              <select class="form-select" id="category" name="category" required>
+                <% categories.forEach(function(cat) { %>
+                  <option value="<%= cat %>" <%= book.category === cat ? 'selected' : '' %>><%= cat %></option>
+                <% }); %>
+              </select>
+            </div>
+
+            <div class="col-md-6">
+              <label for="totalCopies" class="form-label fw-semibold">
+                Total Physical Copies <span class="text-danger">*</span>
+              </label>
+              <input
+                type="number"
+                class="form-control"
+                id="totalCopies"
+                name="totalCopies"
+                min="<%= issuedCopies %>"
+                value="<%= book.totalCopies %>"
+                required
+              >
+              <div class="form-text small">
+                Cannot be lower than <strong><%= issuedCopies %></strong> (currently issued copies). Available copies will adjust automatically.
+              </div>
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label for="description" class="form-label fw-semibold">Description</label>
+            <textarea
+              class="form-control"
+              id="description"
+              name="description"
+              rows="4"
+            ><%= book.description %></textarea>
+          </div>
+
+          <div class="mb-4">
+            <label class="form-label fw-semibold">Catalog Visibility</label>
+            <div class="form-check form-switch">
+              <input
+                class="form-check-input"
+                type="checkbox"
+                id="isActive"
+                name="isActive"
+                value="true"
+                <%= book.isActive ? 'checked' : '' %>
+              >
+              <label class="form-check-label" for="isActive">
+                Active in Catalog (allow members to search and request this book)
+              </label>
+            </div>
+          </div>
+
+          <div class="d-flex justify-content-end gap-2">
+            <a href="/librarian/books" class="btn btn-outline-secondary px-4">Cancel</a>
+            <button type="submit" class="btn btn-primary px-4 fw-semibold">
+              <i class="bi bi-check2-circle me-1"></i> Update Book
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<%- include('../../partials/footer') %>
