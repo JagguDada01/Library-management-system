@@ -76,7 +76,7 @@ class DashboardService {
       mostBorrowedAgg
     ] = await Promise.all([
       Book.aggregate([
-        { $match: { isActive: true } },
+        { $match: { isActive: { $ne: false } } },
         {
           $group: {
             _id: null,
@@ -85,8 +85,8 @@ class DashboardService {
           }
         }
       ]),
-      Book.countDocuments({ isActive: true }),
-      User.countDocuments({ role: ROLES.MEMBER }),
+      Book.countDocuments({ isActive: { $ne: false } }),
+      User.countDocuments({ role: { $in: [ROLES.MEMBER, 'member'] } }),
       Request.countDocuments({ status: REQUEST_STATUS.PENDING }),
       Loan.find({ status: LOAN_STATUS.ISSUED }).populate('book member').lean(),
       // Most borrowed books calculated from all historical loans (both ISSUED and RETURNED)

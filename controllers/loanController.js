@@ -114,8 +114,8 @@ class LoanController {
   async showDirectIssueForm(req, res, next) {
     try {
       const [members, books] = await Promise.all([
-        User.find({ role: ROLES.MEMBER }).sort({ name: 1 }).lean(),
-        Book.find({ isActive: true, availableCopies: { $gt: 0 } }).sort({ title: 1 }).lean()
+        User.find({ role: { $in: [ROLES.MEMBER, 'member'] } }).sort({ name: 1 }).lean(),
+        Book.find({ isActive: { $ne: false }, availableCopies: { $gt: 0 } }).sort({ title: 1 }).lean()
       ]);
 
       res.render('librarian/loans/issue', {
@@ -146,8 +146,8 @@ class LoanController {
       res.redirect('/librarian/loans');
     } catch (error) {
       const [members, books] = await Promise.all([
-        User.find({ role: ROLES.MEMBER }).sort({ name: 1 }).lean(),
-        Book.find({ isActive: true, availableCopies: { $gt: 0 } }).sort({ title: 1 }).lean()
+        User.find({ role: { $in: [ROLES.MEMBER, 'member'] } }).sort({ name: 1 }).lean(),
+        Book.find({ isActive: { $ne: false }, availableCopies: { $gt: 0 } }).sort({ title: 1 }).lean()
       ]);
 
       res.status(400).render('librarian/loans/issue', {

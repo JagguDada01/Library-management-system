@@ -38,7 +38,7 @@
               <option value="" disabled selected>Choose an in-stock book...</option>
               <% books.forEach(function(book) { %>
                 <option value="<%= book._id %>">
-                  <%= book.title %> (Available: <%= book.availableCopies %> / <%= book.totalCopies %>) &mdash; <%= book.category %>
+                  <%= book.title %> (Available: <%= book.availableCopies %> / <%= book.totalCopies %>)<% if (book.category) { %> &mdash; <%= typeof book.category === 'object' ? (book.category.name || book.category.title || '') : book.category %><% } %>
                 </option>
               <% }); %>
             </select>

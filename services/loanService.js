@@ -21,7 +21,7 @@ class LoanService {
     if (!book) {
       throw new Error('Book not found');
     }
-    if (!book.isActive) {
+    if (book.isActive === false) {
       throw new Error('This book is currently archived and unavailable for request');
     }
 
@@ -91,7 +91,7 @@ class LoanService {
     if (!member) {
       throw new Error('Request member no longer exists');
     }
-    if (!book || !book.isActive) {
+    if (!book || book.isActive === false) {
       throw new Error('Book is no longer available in catalog');
     }
 
@@ -119,7 +119,7 @@ class LoanService {
     const updatedBook = await Book.findOneAndUpdate(
       {
         _id: book._id,
-        isActive: true,
+        isActive: { $ne: false },
         availableCopies: { $gt: 0 }
       },
       {
@@ -189,7 +189,7 @@ class LoanService {
     }
 
     const book = await Book.findById(bookId);
-    if (!book || !book.isActive) {
+    if (!book || book.isActive === false) {
       throw new Error('Selected book is not active or does not exist');
     }
 
@@ -215,7 +215,7 @@ class LoanService {
     const updatedBook = await Book.findOneAndUpdate(
       {
         _id: bookId,
-        isActive: true,
+        isActive: { $ne: false },
         availableCopies: { $gt: 0 }
       },
       {
